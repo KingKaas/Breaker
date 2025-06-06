@@ -12,6 +12,8 @@
     #startScreen input { padding: 5px; font-size: 16px; }
     #startScreen button, #gameOverScreen button { padding: 6px 12px; font-size: 16px; margin-top: 10px; }
     #gameOverScreen { display: none; }
+    #controls { display: none; margin-top: 10px; }
+    #controls button { width: 100px; height: 50px; font-size: 24px; margin: 0 10px; }
   </style>
 </head>
 <body>
@@ -21,6 +23,10 @@
   <button onclick="startGame()">Start Game</button>
 </div>
 <canvas id="gameCanvas" width="480" height="320"></canvas>
+<div id="controls">
+  <button id="leftBtn">⬅️</button>
+  <button id="rightBtn">➡️</button>
+</div>
 <div id="gameOverScreen">
   <h2>Game Over</h2>
   <p id="finalResult"></p>
@@ -31,6 +37,9 @@
   const ctx = canvas.getContext("2d");
   const gameOverScreen = document.getElementById("gameOverScreen");
   const finalResult = document.getElementById("finalResult");
+  const controls = document.getElementById("controls");
+  const leftBtn = document.getElementById("leftBtn");
+  const rightBtn = document.getElementById("rightBtn");
   let playerName = "";
 
   let ball = {
@@ -86,6 +95,7 @@
     }
     document.getElementById("startScreen").style.display = "none";
     canvas.style.display = "block";
+    controls.style.display = "flex";
     initBricks();
     draw();
   }
@@ -94,6 +104,11 @@
   document.addEventListener("keyup", keyUpHandler, false);
   canvas.addEventListener("touchstart", e => e.preventDefault(), { passive: false });
   canvas.addEventListener("touchmove", touchMoveHandler, { passive: false });
+
+  leftBtn.addEventListener("touchstart", () => leftPressed = true);
+  leftBtn.addEventListener("touchend", () => leftPressed = false);
+  rightBtn.addEventListener("touchstart", () => rightPressed = true);
+  rightBtn.addEventListener("touchend", () => rightPressed = false);
 
   function keyDownHandler(e) {
     if(e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
@@ -202,6 +217,7 @@
       mistakes++;
       if(mistakes >= maxMistakes) {
         canvas.style.display = "none";
+        controls.style.display = "none";
         gameOverScreen.style.display = "block";
         finalResult.textContent = `${playerName}, your final score is ${score}`;
         return;
